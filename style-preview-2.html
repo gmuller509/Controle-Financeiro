@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Estilo 2 — Minimal & Clean</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: #fafafa; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card { background: white; padding: 56px; max-width: 520px; width: 100%; border: 1px solid #e8e8e8; }
+  .step { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #bbb; margin-bottom: 32px; }
+  h2 { font-size: 28px; font-weight: 400; color: #111; margin-bottom: 12px; line-height: 1.4; }
+  .subtitle { color: #999; font-size: 15px; margin-bottom: 48px; font-style: italic; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { border: 1px solid #e8e8e8; padding: 18px 24px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 16px; }
+  .option:hover { border-color: #111; background: #f9f9f9; }
+  .option .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #ccc; flex-shrink: 0; }
+  .option span { font-size: 15px; color: #333; }
+  .footer { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e8e8e8; padding-top: 24px; }
+  .footer .count { font-size: 13px; color: #bbb; letter-spacing: 1px; }
+  .footer button { background: #111; color: white; border: none; padding: 12px 28px; font-size: 14px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; }
+  .label { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="label">⬜ ESTILO 2 — Minimal & Clean</div>
+<div class="card">
+  <div class="step">02 / 05</div>
+  <h2>Qual é o seu fim de semana ideal?</h2>
+  <p class="subtitle">Seja honesto — não existe resposta errada.</p>
+  <div class="options">
+    <div class="option"><div class="dot"></div><span>Aventura ao ar livre</span></div>
+    <div class="option"><div class="dot"></div><span>Netflix e relaxar em casa</span></div>
+    <div class="option"><div class="dot"></div><span>Sair com amigos</span></div>
+    <div class="option"><div class="dot"></div><span>Ler em silêncio absoluto</span></div>
+  </div>
+  <div class="footer">
+    <span class="count">2 DE 5</span>
+    <button>Continuar →</button>
+  </div>
+</div>
+</body>
+</html>

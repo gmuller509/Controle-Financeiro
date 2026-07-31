@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Estilo 3 — Bold & Dramático</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card { background: #111; border: 1px solid #222; padding: 48px; max-width: 540px; width: 100%; position: relative; overflow: hidden; }
+  .card::before { content: ''; position: absolute; top: -100px; right: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,200,0,0.08), transparent 70%); }
+  .step { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #FFD700; margin-bottom: 28px; }
+  h2 { font-size: 32px; font-weight: 900; color: #ffffff; margin-bottom: 10px; line-height: 1.2; text-transform: uppercase; letter-spacing: -0.5px; }
+  .subtitle { color: #555; font-size: 14px; margin-bottom: 40px; }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .option { border: 1px solid #222; padding: 20px; cursor: pointer; transition: all 0.15s; position: relative; }
+  .option:hover { border-color: #FFD700; background: rgba(255,215,0,0.05); }
+  .option:hover .arrow { opacity: 1; }
+  .option .arrow { position: absolute; top: 12px; right: 12px; color: #FFD700; font-size: 12px; opacity: 0; transition: opacity 0.15s; }
+  .option .letter { display: block; font-size: 11px; letter-spacing: 2px; color: #FFD700; text-transform: uppercase; margin-bottom: 6px; }
+  .option span { font-size: 15px; font-weight: 600; color: #ccc; }
+  .progress { margin-top: 40px; display: flex; align-items: center; gap: 16px; }
+  .bars { display: flex; gap: 4px; flex: 1; }
+  .bar { height: 3px; flex: 1; background: #222; }
+  .bar.active { background: #FFD700; }
+  .progress-text { font-size: 12px; color: #444; letter-spacing: 1px; }
+  .label { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.1); color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+<div class="label">⚫ ESTILO 3 — Bold & Dramático</div>
+<div class="card">
+  <div class="step">Pergunta 02 / 05</div>
+  <h2>Seu fim de semana ideal?</h2>
+  <p class="subtitle">Seja honesto — não existe resposta errada.</p>
+  <div class="options">
+    <div class="option">
+      <span class="arrow">→</span>
+      <span class="letter">A</span>
+      <span>Aventura ao ar livre</span>
+    </div>
+    <div class="option">
+      <span class="arrow">→</span>
+      <span class="letter">B</span>
+      <span>Netflix e relaxar</span>
+    </div>
+    <div class="option">
+      <span class="arrow">→</span>
+      <span class="letter">C</span>
+      <span>Sair com amigos</span>
+    </div>
+    <div class="option">
+      <span class="arrow">→</span>
+      <span class="letter">D</span>
+      <span>Ler em silêncio</span>
+    </div>
+  </div>
+  <div class="progress">
+    <div class="bars">
+      <div class="bar active"></div>
+      <div class="bar active"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <span class="progress-text">2/5</span>
+  </div>
+</div>
+</body>
+</html>

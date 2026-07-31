@@ -2,20 +2,19 @@
 
 ## Visão Geral
 
-Quiz interativo "Qual é a sua personalidade de café?" para o programa de fidelidade da Basecamp Coffee. O usuário responde 7 perguntas e descobre qual bebida combina com sua personalidade.
+Quiz interativo "Qual é a sua personalidade de café?" para o programa de fidelidade da Basecamp Coffee. O usuário responde 5 perguntas de estilo de vida e descobre qual bebida combina com sua personalidade.
 
 ---
 
-## 1. Pares Personalidade → Café (6 resultados)
+## 1. Pares Personalidade → Café (5 resultados)
 
 | Personalidade | Bebida | Tagline |
 |--------------|--------|---------|
-| **Bold Adventurer** | Double Espresso | "Você vive pela intensidade" |
-| **Cozy Classic** | Medium Roast Drip | "Conforto em cada xícara" |
-| **Sweet Enthusiast** | Caramel Latte | "A vida é curta demais pro amargo" |
-| **Zen Minimalist** | Black Coffee, Single Origin | "Simples. Limpo. Perfeito." |
-| **Social Butterfly** | Cappuccino | "Café é melhor em companhia" |
-| **Night Owl** | Red Eye (café + espresso) | "Dormir é opcional" |
+| **Bold Adventurer** | Espresso Duplo | "Você vive pela intensidade" |
+| **Sweet Enthusiast** | Latte de Caramelo | "A vida é curta demais para o amargo" |
+| **Zen Minimalist** | Café Preto, Single Origin | "Simples. Limpo. Perfeito." |
+| **Social Butterfly** | Cappuccino | "Café é melhor acompanhado" |
+| **Indulgent Treat** | Mocha com Chantilly | "Café é sobremesa" |
 
 ---
 
@@ -23,25 +22,24 @@ Quiz interativo "Qual é a sua personalidade de café?" para o programa de fidel
 
 **Opção B — Mostrar percentuais**
 
-Ao final, o usuário vê sua distribuição completa de personalidades com porcentagens e todas as recomendações de café. Exemplo:
-> "Você é 50% Bold Adventurer, 33% Night Owl, 17% Social Butterfly"
+Ao final, o usuário vê o breakdown completo de todas as personalidades com porcentagens e todas as recomendações de café correspondentes. Exemplo:
+> "Você é 50% Bold Adventurer, 30% Zen Minimalist, 20% Social Butterfly"
 
-Cada pergunta tem 6 respostas, cada uma mapeada para uma personalidade. O resultado final mostra o percentual de cada personalidade com base nas respostas escolhidas.
+Cada pergunta tem 5 respostas, cada uma mapeada para uma personalidade. O resultado final mostra o percentual de cada personalidade com base nas respostas escolhidas.
 
 ---
 
 ## 3. Estilo Visual
 
-**Estilo 1 — Divertido & Colorido**
+**Estilo 4 (Quente & Aconchegante) com layout de opções em grade 2x2 do Estilo 1**
 
-- Fundo: gradiente vibrante (vermelho → amarelo → teal)
-- Card: branco com cantos arredondados (32px), sombra colorida dupla
-- Fonte: Nunito (arredondada, amigável, peso bold/900)
-- Cores primárias: `#FF6B6B` (vermelho coral), `#FFE66D` (amarelo), `#4ECDC4` (teal)
-- Opções de resposta: borda colorida ao selecionar, animação de translate no hover
-- Botão: vermelho coral, cantos arredondados, fonte bold
-- Barra de progresso: dots coloridos (ativo = coral, feito = teal)
-- Referência: `style-preview-1.html`
+- Paleta: tons terrosos — marrons, bege, laranja suave — sensação de cafeteria aconchegante
+- Fundo: gradiente suave (`#f5ebe0` → `#e8d5b7`)
+- Card: `#fffbf5`, bordas arredondadas, sombra suave marrom
+- Botão: `#c8824a` (laranja terroso)
+- Opções: grade 2x2 com emojis, bordas suaves, hover em laranja
+- Tom geral: caloroso, acolhedor, autêntico — como uma cafeteria de verdade
+- Referência: `style-preview-4.html` (estética) + `style-preview-1.html` (grid de opções)
 
 ---
 
@@ -49,16 +47,15 @@ Cada pergunta tem 6 respostas, cada uma mapeada para uma personalidade. O result
 
 **Sim — imagens para cada resultado**
 
-Imagens já baixadas em `public/`:
+Imagens baixadas do Unsplash em `public/`:
 
 | Arquivo | Personalidade |
 |---------|--------------|
-| `espresso.jpg` | Bold Adventurer |
-| `drip-coffee.jpg` | Cozy Classic |
-| `caramel-latte.jpg` | Sweet Enthusiast |
-| `black-coffee.jpg` | Zen Minimalist |
-| `cappuccino.jpg` | Social Butterfly |
-| `red-eye.jpg` | Night Owl |
+| `bold-adventurer.jpg` | Bold Adventurer — Espresso Duplo |
+| `sweet-enthusiast.jpg` | Sweet Enthusiast — Latte de Caramelo |
+| `zen-minimalist.jpg` | Zen Minimalist — Café Preto |
+| `social-butterfly.jpg` | Social Butterfly — Cappuccino |
+| `indulgent-treat.jpg` | Indulgent Treat — Mocha com Chantilly |
 
 ---
 
@@ -70,70 +67,42 @@ Cada opção de resposta deve ter um emoji relevante antes do texto.
 
 ---
 
-## 6. Perguntas do Quiz (7 perguntas)
+## 6. Perguntas do Quiz (5 perguntas — estilo de vida)
 
-### Q1 — Pop culture
-**Se você fosse um personagem de série, qual seria?**
-- 🔥 Joel Miller (The Last of Us) — sobrevivente, intenso → Bold Adventurer
-- 🧣 Lorelai Gilmore — café na veia, confortável em casa → Cozy Classic
-- 🍭 Alexis Rose (Schitt's Creek) — extravagante, adora uma indulgência → Sweet Enthusiast
-- 🧘 Mr. Spock — lógico, minimalista, direto → Zen Minimalist
-- 🦋 Ted Lasso — otimista, ama as pessoas → Social Butterfly
-- 🌙 BoJack Horseman — noturno, pensativo, funciona de madrugada → Night Owl
+### Q1 — Como você começa a sua manhã?
+- 🏃 Academia ou corrida antes de tudo → Bold Adventurer
+- 🛁 Banho longo e calma total → Zen Minimalist
+- 📱 Redes sociais na cama → Social Butterfly
+- ☕ Café na mão, série ligada → Indulgent Treat
+- 🎵 Música alta e bom humor → Sweet Enthusiast
 
-### Q2 — Estilo de vida
-**Como é o seu fim de semana ideal?**
-- 🏔️ Trilha ou esporte radical → Bold Adventurer
-- 🛋️ Pijama, cobertor e série → Cozy Classic
-- 🛍️ Brunch com amigos e sobremesa obrigatória → Sweet Enthusiast
-- 📖 Leitura em silêncio ou meditação → Zen Minimalist
-- 🎉 Evento, reunião, quanto mais gente melhor → Social Butterfly
-- 🌃 Acorda depois do meio-dia e tá ótimo → Night Owl
+### Q2 — Seu fim de semana ideal é:
+- 🏔️ Trilha, praia ou aventura ao ar livre → Bold Adventurer
+- 🏡 Em casa, sem compromisso → Zen Minimalist
+- 🎉 Sair com amigos e família → Social Butterfly
+- 🍕 Delivery, sofá e conforto total → Indulgent Treat
+- 🛍️ Compras, cafés e passeios → Sweet Enthusiast
 
-### Q3 — Abstrato
-**Você é uma cor. Qual?**
-- 🔴 Vermelho intenso → Bold Adventurer
-- 🟤 Marrom quente → Cozy Classic
-- 🌸 Rosa pastel → Sweet Enthusiast
-- ⬜ Branco clean → Zen Minimalist
-- 🟡 Amarelo vibrante → Social Butterfly
-- 🟣 Azul meia-noite → Night Owl
+### Q3 — Na hora de escolher um restaurante, você:
+- 🗣️ Vai no que todo mundo indica → Social Butterfly
+- 🔍 Pesquisa muito antes de decidir → Zen Minimalist
+- 📸 Escolhe o mais instagramável → Sweet Enthusiast
+- 🌶️ Quer o cardápio mais ousado → Bold Adventurer
+- 🛋️ Prioriza o mais confortável e gostoso → Indulgent Treat
 
-### Q4 — Estilo de vida
-**Qual é sua relação com horários?**
-- ⚡ Chego cedo, já estou planejando o próximo passo → Bold Adventurer
-- ☕ Chego no horário, com meu café na mão → Cozy Classic
-- 🎀 Chego animado(a), uns 10 min depois — mas compenso com energia → Sweet Enthusiast
-- 🎯 Chego exatamente no horário, não um minuto antes ou depois → Zen Minimalist
-- 💬 Chego cedo pra bater papo antes de começar → Social Butterfly
-- 😴 "Horário" é um conceito interessante → Night Owl
+### Q4 — Sua mochila ou bolsa geralmente tem:
+- 🎧 Fone, celular carregado e nada mais → Zen Minimalist
+- 🎒 Mil coisas "por precaução" → Indulgent Treat
+- 💄 Maquiagem, perfume, o essencial bonito → Sweet Enthusiast
+- 💧 Garrafa de água e lanche → Bold Adventurer
+- 📅 Agenda cheia de encontros com amigos → Social Butterfly
 
-### Q5 — Pop culture
-**Qual gênero de filme você sempre escolhe?**
-- 💥 Ação e aventura — quanto mais explosão, melhor → Bold Adventurer
-- 🎄 Comédia romântica ou drama aconchegante → Cozy Classic
-- 🍿 Animação ou musical — tem que ser divertido → Sweet Enthusiast
-- 🎬 Documentário ou ficção científica minimalista → Zen Minimalist
-- 😂 Comédia com elenco enorme — quer rir junto → Social Butterfly
-- 🌑 Terror ou thriller psicológico às 2h da manhã → Night Owl
-
-### Q6 — Abstrato
-**Uma ilha deserta. Você leva UMA coisa além de comida e água:**
-- 🔪 Faca de sobrevivência → Bold Adventurer
-- 📚 Livro favorito → Cozy Classic
-- 🍫 Chocolate ou doce → Sweet Enthusiast
-- 🧘 Nada — o silêncio já basta → Zen Minimalist
-- 📱 Telefone com sinal → Social Butterfly
-- 🎧 Fone com playlist completa → Night Owl
-
-### Q7 — Estilo de vida
-**Como você toma decisões importantes?**
-- ⚡ Na hora — confia no instinto → Bold Adventurer
-- 🤔 Pensa bastante, consulta quem confia → Cozy Classic
-- 💖 Vai pelo que o coração mandar → Sweet Enthusiast
-- 📊 Pesquisa, analisa, decide com dados → Zen Minimalist
-- 🗣️ Pede opinião de todo mundo → Social Butterfly
-- 🌙 Dorme, decide de manhã (ou de tarde) → Night Owl
+### Q5 — Quando você está estressado, você:
+- 🏋️ Sai para se exercitar → Bold Adventurer
+- 🧘 Faz silêncio e respira → Zen Minimalist
+- 📞 Liga para um amigo → Social Butterfly
+- 🍫 Come algo gostoso → Indulgent Treat
+- 📺 Assiste algo divertido → Sweet Enthusiast
 
 ---
 
@@ -141,15 +110,14 @@ Cada opção de resposta deve ter um emoji relevante antes do texto.
 
 ```
 quiz-project/
-├── REQUIREMENTS.md       ← este arquivo
+├── REQUIREMENTS.md
 ├── public/
-│   ├── espresso.jpg
-│   ├── drip-coffee.jpg
-│   ├── caramel-latte.jpg
-│   ├── black-coffee.jpg
-│   ├── cappuccino.jpg
-│   └── red-eye.jpg
-├── style-preview-1.html  ← estilo escolhido
+│   ├── bold-adventurer.jpg
+│   ├── sweet-enthusiast.jpg
+│   ├── zen-minimalist.jpg
+│   ├── social-butterfly.jpg
+│   └── indulgent-treat.jpg
+├── style-preview-1.html
 ├── style-preview-2.html
 ├── style-preview-3.html
 └── style-preview-4.html
@@ -160,6 +128,6 @@ quiz-project/
 ## 8. Stack Técnica
 
 - **Framework**: Next.js (React)
-- **Linguagem**: JavaScript/TypeScript
-- **Estilo**: Tailwind CSS ou CSS modules
+- **Linguagem**: TypeScript
+- **Estilo**: Tailwind CSS
 - **Deploy**: Vercel

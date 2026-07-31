@@ -7,135 +7,99 @@ const personalities = [
   {
     id: "bold",
     name: "Bold Adventurer",
-    drink: "Double Espresso",
+    drink: "Espresso Duplo",
     tagline: "Você vive pela intensidade",
-    image: "/espresso.jpg",
-    color: "#FF6B6B",
+    image: "/bold-adventurer.jpg",
+    color: "#c8824a",
     emoji: "🔥",
-  },
-  {
-    id: "cozy",
-    name: "Cozy Classic",
-    drink: "Medium Roast Drip",
-    tagline: "Conforto em cada xícara",
-    image: "/drip-coffee.jpg",
-    color: "#C8A96E",
-    emoji: "🧣",
   },
   {
     id: "sweet",
     name: "Sweet Enthusiast",
-    drink: "Caramel Latte",
-    tagline: "A vida é curta demais pro amargo",
-    image: "/caramel-latte.jpg",
-    color: "#FF9FD8",
+    drink: "Latte de Caramelo",
+    tagline: "A vida é curta demais para o amargo",
+    image: "/sweet-enthusiast.jpg",
+    color: "#d4956a",
     emoji: "🍭",
   },
   {
     id: "zen",
     name: "Zen Minimalist",
-    drink: "Black Coffee, Single Origin",
+    drink: "Café Preto, Single Origin",
     tagline: "Simples. Limpo. Perfeito.",
-    image: "/black-coffee.jpg",
-    color: "#4ECDC4",
+    image: "/zen-minimalist.jpg",
+    color: "#7a6652",
     emoji: "🧘",
   },
   {
     id: "social",
     name: "Social Butterfly",
     drink: "Cappuccino",
-    tagline: "Café é melhor em companhia",
-    image: "/cappuccino.jpg",
-    color: "#FFE66D",
+    tagline: "Café é melhor acompanhado",
+    image: "/social-butterfly.jpg",
+    color: "#b87333",
     emoji: "🦋",
   },
   {
-    id: "night",
-    name: "Night Owl",
-    drink: "Red Eye",
-    tagline: "Dormir é opcional",
-    image: "/red-eye.jpg",
-    color: "#A78BFA",
-    emoji: "🌙",
+    id: "indulgent",
+    name: "Indulgent Treat",
+    drink: "Mocha com Chantilly",
+    tagline: "Café é sobremesa",
+    image: "/indulgent-treat.jpg",
+    color: "#a0522d",
+    emoji: "🍫",
   },
 ];
 
 const questions = [
   {
-    text: "Se você fosse um personagem de série, qual seria?",
+    text: "Como você começa a sua manhã?",
     options: [
-      { emoji: "🔥", text: "Joel Miller — sobrevivente, intenso, age primeiro", personality: "bold" },
-      { emoji: "🧣", text: "Lorelai Gilmore — café na veia, confortável em casa", personality: "cozy" },
-      { emoji: "🍭", text: "Alexis Rose — extravagante, adora uma indulgência", personality: "sweet" },
-      { emoji: "🧘", text: "Mr. Spock — lógico, minimalista, direto", personality: "zen" },
-      { emoji: "🦋", text: "Ted Lasso — otimista, ama as pessoas", personality: "social" },
-      { emoji: "🌙", text: "BoJack Horseman — noturno, pensativo, madrugada", personality: "night" },
+      { emoji: "🏃", text: "Academia ou corrida antes de tudo", personality: "bold" },
+      { emoji: "🎵", text: "Música alta e bom humor", personality: "sweet" },
+      { emoji: "🛁", text: "Banho longo e calma total", personality: "zen" },
+      { emoji: "📱", text: "Redes sociais na cama", personality: "social" },
+      { emoji: "☕", text: "Café na mão, série ligada", personality: "indulgent" },
     ],
   },
   {
-    text: "Como é o seu fim de semana ideal?",
+    text: "Seu fim de semana ideal é:",
     options: [
-      { emoji: "🏔️", text: "Trilha ou esporte radical", personality: "bold" },
-      { emoji: "🛋️", text: "Pijama, cobertor e série", personality: "cozy" },
-      { emoji: "🛍️", text: "Brunch com amigos e sobremesa obrigatória", personality: "sweet" },
-      { emoji: "📖", text: "Leitura em silêncio ou meditação", personality: "zen" },
-      { emoji: "🎉", text: "Evento, reunião, quanto mais gente melhor", personality: "social" },
-      { emoji: "🌃", text: "Acorda depois do meio-dia e tá ótimo", personality: "night" },
+      { emoji: "🏔️", text: "Trilha, praia ou aventura ao ar livre", personality: "bold" },
+      { emoji: "🛍️", text: "Compras, cafés e passeios", personality: "sweet" },
+      { emoji: "🏡", text: "Em casa, sem compromisso", personality: "zen" },
+      { emoji: "🎉", text: "Sair com amigos e família", personality: "social" },
+      { emoji: "🍕", text: "Delivery, sofá e conforto total", personality: "indulgent" },
     ],
   },
   {
-    text: "Você é uma cor. Qual?",
+    text: "Na hora de escolher um restaurante, você:",
     options: [
-      { emoji: "🔴", text: "Vermelho intenso", personality: "bold" },
-      { emoji: "🟤", text: "Marrom quente", personality: "cozy" },
-      { emoji: "🌸", text: "Rosa pastel", personality: "sweet" },
-      { emoji: "⬜", text: "Branco clean", personality: "zen" },
-      { emoji: "🟡", text: "Amarelo vibrante", personality: "social" },
-      { emoji: "🟣", text: "Azul meia-noite", personality: "night" },
+      { emoji: "🌶️", text: "Quer o cardápio mais ousado", personality: "bold" },
+      { emoji: "📸", text: "Escolhe o mais instagramável", personality: "sweet" },
+      { emoji: "🔍", text: "Pesquisa muito antes de decidir", personality: "zen" },
+      { emoji: "🗣️", text: "Vai no que todo mundo indica", personality: "social" },
+      { emoji: "🛋️", text: "Prioriza o mais confortável e gostoso", personality: "indulgent" },
     ],
   },
   {
-    text: "Qual é sua relação com horários?",
+    text: "Sua mochila ou bolsa geralmente tem:",
     options: [
-      { emoji: "⚡", text: "Chego cedo, já planejando o próximo passo", personality: "bold" },
-      { emoji: "☕", text: "Chego no horário, com meu café na mão", personality: "cozy" },
-      { emoji: "🎀", text: "Chego uns 10 min depois — mas compenso com energia", personality: "sweet" },
-      { emoji: "🎯", text: "Exatamente no horário, não um minuto antes ou depois", personality: "zen" },
-      { emoji: "💬", text: "Chego cedo pra bater papo antes de começar", personality: "social" },
-      { emoji: "😴", text: '"Horário" é um conceito interessante', personality: "night" },
+      { emoji: "💧", text: "Garrafa de água e lanche", personality: "bold" },
+      { emoji: "💄", text: "Maquiagem, perfume, o essencial bonito", personality: "sweet" },
+      { emoji: "🎧", text: "Fone, celular carregado e nada mais", personality: "zen" },
+      { emoji: "📅", text: "Agenda cheia de encontros com amigos", personality: "social" },
+      { emoji: "🎒", text: "Mil coisas \"por precaução\"", personality: "indulgent" },
     ],
   },
   {
-    text: "Qual gênero de filme você sempre escolhe?",
+    text: "Quando você está estressado, você:",
     options: [
-      { emoji: "💥", text: "Ação e aventura — quanto mais explosão, melhor", personality: "bold" },
-      { emoji: "🎄", text: "Comédia romântica ou drama aconchegante", personality: "cozy" },
-      { emoji: "🍿", text: "Animação ou musical — tem que ser divertido", personality: "sweet" },
-      { emoji: "🎬", text: "Documentário ou ficção científica minimalista", personality: "zen" },
-      { emoji: "😂", text: "Comédia com elenco enorme — quer rir junto", personality: "social" },
-      { emoji: "🌑", text: "Terror ou thriller psicológico às 2h da manhã", personality: "night" },
-    ],
-  },
-  {
-    text: "Ilha deserta. Você leva UMA coisa além de comida e água:",
-    options: [
-      { emoji: "🔪", text: "Faca de sobrevivência", personality: "bold" },
-      { emoji: "📚", text: "Livro favorito", personality: "cozy" },
-      { emoji: "🍫", text: "Chocolate ou doce", personality: "sweet" },
-      { emoji: "🧘", text: "Nada — o silêncio já basta", personality: "zen" },
-      { emoji: "📱", text: "Telefone com sinal", personality: "social" },
-      { emoji: "🎧", text: "Fone com playlist completa", personality: "night" },
-    ],
-  },
-  {
-    text: "Como você toma decisões importantes?",
-    options: [
-      { emoji: "⚡", text: "Na hora — confia no instinto", personality: "bold" },
-      { emoji: "🤔", text: "Pensa bastante, consulta quem confia", personality: "cozy" },
-      { emoji: "💖", text: "Vai pelo que o coração mandar", personality: "sweet" },
-      { emoji: "📊", text: "Pesquisa, analisa, decide com dados", personality: "zen" },
-      { emoji: "🗣️", text: "Pede opinião de todo mundo", personality: "social" },
-      { emoji: "🌙", text: "Dorme, decide de manhã (ou de tarde)", personality: "night" },
+      { emoji: "🏋️", text: "Sai para se exercitar", personality: "bold" },
+      { emoji: "📺", text: "Assiste algo divertido", personality: "sweet" },
+      { emoji: "🧘", text: "Faz silêncio e respira", personality: "zen" },
+      { emoji: "📞", text: "Liga para um amigo", personality: "social" },
+      { emoji: "🍫", text: "Come algo gostoso", personality: "indulgent" },
     ],
   },
 ];
@@ -155,7 +119,6 @@ export default function Home() {
   const handleNext = () => {
     if (!selected) return;
     const newAnswers = [...answers, selected];
-
     if (currentQ < questions.length - 1) {
       setAnswers(newAnswers);
       setCurrentQ(currentQ + 1);
@@ -191,16 +154,16 @@ export default function Home() {
     return (
       <div style={styles.bg}>
         <div style={styles.card}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>☕</div>
+          <div style={{ fontSize: 52, marginBottom: 12 }}>☕</div>
           <div style={styles.brand}>BASECAMP COFFEE</div>
           <h1 style={styles.introTitle}>Qual é a sua personalidade de café?</h1>
           <p style={styles.introSub}>
-            Responda 7 perguntas rápidas e descubra qual bebida combina com o seu jeito de ser.
+            Responda 5 perguntas rápidas e descubra qual bebida combina com o seu jeito de ser.
           </p>
           <button style={styles.btnPrimary} onClick={() => setPhase("quiz")}>
             Começar o quiz →
           </button>
-          <p style={styles.introHint}>7 perguntas · menos de 2 minutos</p>
+          <p style={styles.introHint}>5 perguntas · menos de 2 minutos</p>
         </div>
       </div>
     );
@@ -208,7 +171,6 @@ export default function Home() {
 
   if (phase === "quiz") {
     const q = questions[currentQ];
-    const progress = ((currentQ) / questions.length) * 100;
 
     return (
       <div style={styles.bg}>
@@ -219,7 +181,8 @@ export default function Home() {
                 key={i}
                 style={{
                   ...styles.dot,
-                  background: i < currentQ ? "#4ECDC4" : i === currentQ ? "#FF6B6B" : "#eee",
+                  background:
+                    i < currentQ ? "#a0724a" : i === currentQ ? "#c8824a" : "#e8d5b7",
                 }}
               />
             ))}
@@ -246,7 +209,6 @@ export default function Home() {
               <button
                 style={styles.btnBack}
                 onClick={() => {
-                  const prev = answers.slice(0, -1);
                   setAnswers(answers.slice(0, currentQ - 1));
                   setCurrentQ(currentQ - 1);
                   setSelected(answers[currentQ - 1] || null);
@@ -283,15 +245,8 @@ export default function Home() {
     <div style={styles.bg}>
       <div style={{ ...styles.card, maxWidth: 580, padding: 0, overflow: "hidden" }}>
 
-        {/* Hero section */}
         <div style={{ position: "relative", height: 260, width: "100%" }}>
-          <Image
-            src={top.image}
-            alt={top.drink}
-            fill
-            style={{ objectFit: "cover" }}
-            priority
-          />
+          <Image src={top.image} alt={top.drink} fill style={{ objectFit: "cover" }} priority />
           <div style={styles.heroOverlay} />
           <div style={styles.heroContent}>
             <div style={styles.brand}>SEU RESULTADO</div>
@@ -301,14 +256,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tagline */}
         <div style={styles.taglineBanner}>
           <span style={{ color: top.color, fontWeight: 900 }}>"</span>
           {top.tagline}
           <span style={{ color: top.color, fontWeight: 900 }}>"</span>
         </div>
 
-        {/* Percentage bar for top result */}
         <div style={styles.topPercentRow}>
           <span style={styles.topPercentLabel}>Sua personalidade dominante</span>
           <span style={{ ...styles.resultPct, color: top.color, fontSize: 18 }}>{top.percent}%</span>
@@ -317,7 +270,6 @@ export default function Home() {
           <div style={{ ...styles.barFill, width: `${top.percent}%`, background: top.color }} />
         </div>
 
-        {/* Secondary personalities grid */}
         {secondary.length > 0 && (
           <div style={styles.secondarySection}>
             <div style={styles.sectionTitle}>Também tem um pouco de...</div>
@@ -325,12 +277,7 @@ export default function Home() {
               {secondary.map((p) => (
                 <div key={p.id} style={styles.secondaryCard}>
                   <div style={styles.secondaryImgWrap}>
-                    <Image
-                      src={p.image}
-                      alt={p.drink}
-                      fill
-                      style={{ objectFit: "cover" }}
-                    />
+                    <Image src={p.image} alt={p.drink} fill style={{ objectFit: "cover" }} />
                     <div style={{ ...styles.secondaryOverlay, background: p.color + "99" }} />
                     <span style={styles.secondaryEmoji}>{p.emoji}</span>
                   </div>
@@ -343,7 +290,7 @@ export default function Home() {
         )}
 
         <div style={{ padding: "0 28px 32px" }}>
-          <button style={{ ...styles.btnPrimary, background: "#4ECDC4", width: "100%" }} onClick={restart}>
+          <button style={{ ...styles.btnPrimary, width: "100%", margin: 0 }} onClick={restart}>
             Refazer o quiz
           </button>
         </div>
@@ -355,7 +302,7 @@ export default function Home() {
 const styles: Record<string, React.CSSProperties> = {
   bg: {
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 50%, #4ECDC4 100%)",
+    background: "linear-gradient(160deg, #f5ebe0 0%, #e8d5b7 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -363,45 +310,46 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "'Nunito', sans-serif",
   },
   card: {
-    background: "white",
-    borderRadius: 32,
-    padding: "48px 40px",
+    background: "#fffbf5",
+    borderRadius: 24,
+    padding: "44px 40px",
     maxWidth: 560,
     width: "100%",
-    boxShadow: "8px 8px 0px #FF6B6B, 16px 16px 0px #FFE66D",
+    boxShadow: "0 8px 40px rgba(139,90,43,0.14)",
+    border: "1px solid #f0e0c8",
   },
   brand: {
     fontSize: 11,
     fontWeight: 900,
     letterSpacing: 3,
-    color: "#FF6B6B",
+    color: "#a0724a",
     textTransform: "uppercase" as const,
     marginBottom: 8,
   },
   introTitle: {
     fontSize: 28,
     fontWeight: 900,
-    color: "#2D2D2D",
+    color: "#3d2b1f",
     lineHeight: 1.3,
     margin: "12px 0 16px",
   },
   introSub: {
     fontSize: 16,
-    color: "#666",
+    color: "#a08060",
     lineHeight: 1.6,
     marginBottom: 32,
   },
   introHint: {
     fontSize: 13,
-    color: "#aaa",
+    color: "#c4a882",
     marginTop: 12,
     textAlign: "center" as const,
   },
   btnPrimary: {
-    background: "#FF6B6B",
+    background: "#c8824a",
     color: "white",
     border: "none",
-    borderRadius: 16,
+    borderRadius: 12,
     padding: "16px 36px",
     fontSize: 16,
     fontWeight: 900,
@@ -409,7 +357,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "'Nunito', sans-serif",
     display: "block",
     margin: "0 auto",
-    transition: "transform 0.1s",
+    transition: "opacity 0.15s",
   },
   progressRow: {
     display: "flex",
@@ -417,15 +365,15 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 28,
   },
   dot: {
-    height: 10,
+    height: 8,
     flex: 1,
-    borderRadius: 10,
+    borderRadius: 8,
     transition: "background 0.3s",
   },
   qNum: {
     fontSize: 12,
     fontWeight: 900,
-    color: "#FF6B6B",
+    color: "#a0724a",
     textTransform: "uppercase" as const,
     letterSpacing: 2,
     marginBottom: 10,
@@ -433,40 +381,40 @@ const styles: Record<string, React.CSSProperties> = {
   qText: {
     fontSize: 22,
     fontWeight: 900,
-    color: "#2D2D2D",
+    color: "#3d2b1f",
     lineHeight: 1.3,
-    marginBottom: 28,
+    marginBottom: 24,
   },
   options: {
-    display: "flex",
-    flexDirection: "column" as const,
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
     gap: 12,
   },
   option: {
-    border: "2.5px solid #eee",
-    borderRadius: 16,
-    padding: "14px 18px",
+    background: "#fdf6ed",
+    border: "1.5px solid #e8d5b7",
+    borderRadius: 14,
+    padding: "16px 14px",
     cursor: "pointer",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 700,
-    color: "#2D2D2D",
+    color: "#5a3e2b",
     transition: "all 0.15s",
     display: "flex",
+    flexDirection: "column" as const,
     alignItems: "center",
-    gap: 12,
-    textAlign: "left" as const,
-    background: "white",
+    gap: 8,
+    textAlign: "center" as const,
     fontFamily: "'Nunito', sans-serif",
+    lineHeight: 1.3,
   },
   optionSelected: {
-    borderColor: "#FF6B6B",
-    background: "#FF6B6B",
+    borderColor: "#c8824a",
+    background: "#c8824a",
     color: "white",
-    transform: "translateX(6px)",
   },
   optEmoji: {
-    fontSize: 22,
-    flexShrink: 0,
+    fontSize: 26,
   },
   footer: {
     marginTop: 28,
@@ -477,7 +425,7 @@ const styles: Record<string, React.CSSProperties> = {
   btnBack: {
     background: "none",
     border: "none",
-    color: "#aaa",
+    color: "#c4a882",
     fontSize: 14,
     fontWeight: 700,
     cursor: "pointer",
@@ -510,26 +458,29 @@ const styles: Record<string, React.CSSProperties> = {
   taglineBanner: {
     padding: "16px 28px",
     fontSize: 16,
-    color: "#444",
+    color: "#5a3e2b",
     fontStyle: "italic",
-    borderBottom: "1px solid #f0f0f0",
+    borderBottom: "1px solid #f0e0c8",
     lineHeight: 1.5,
+    background: "#fffbf5",
   },
   topPercentRow: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "20px 28px 8px",
+    background: "#fffbf5",
   },
   topPercentLabel: {
     fontSize: 12,
     fontWeight: 900,
-    color: "#999",
+    color: "#c4a882",
     textTransform: "uppercase" as const,
     letterSpacing: 1,
   },
   secondarySection: {
     padding: "0 28px 24px",
+    background: "#fffbf5",
   },
   secondaryGrid: {
     display: "grid",
@@ -564,41 +515,21 @@ const styles: Record<string, React.CSSProperties> = {
   secondaryName: {
     fontSize: 11,
     fontWeight: 900,
-    color: "#444",
+    color: "#5a3e2b",
     textAlign: "center" as const,
     lineHeight: 1.3,
   },
   sectionTitle: {
     fontSize: 13,
     fontWeight: 900,
-    color: "#999",
+    color: "#c4a882",
     textTransform: "uppercase" as const,
     letterSpacing: 1,
     marginBottom: 16,
   },
-  resultRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 14,
-  },
-  resultEmoji: {
-    fontSize: 20,
-    width: 28,
-    textAlign: "center" as const,
-  },
-  resultInfo: {
-    flex: 1,
-  },
-  resultName: {
-    fontSize: 13,
-    fontWeight: 700,
-    color: "#2D2D2D",
-    marginBottom: 4,
-  },
   barWrap: {
     height: 8,
-    background: "#eee",
+    background: "#f0e0c8",
     borderRadius: 8,
     overflow: "hidden",
   },

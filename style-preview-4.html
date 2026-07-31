@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Estilo 4 — Quente & Aconchegante</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(160deg, #f5ebe0, #e8d5b7); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card { background: #fffbf5; border-radius: 20px; padding: 44px; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(139,90,43,0.12); border: 1px solid #f0e0c8; }
+  .icon { font-size: 36px; margin-bottom: 20px; display: block; }
+  .tag { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #a0724a; margin-bottom: 16px; display: block; }
+  h2 { font-size: 26px; font-weight: 700; color: #3d2b1f; margin-bottom: 10px; line-height: 1.4; }
+  .subtitle { color: #a08060; font-size: 15px; margin-bottom: 36px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option { background: #fdf6ed; border: 1.5px solid #e8d5b7; border-radius: 12px; padding: 16px 20px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 14px; }
+  .option:hover { border-color: #c8824a; background: #fff3e8; }
+  .option .emoji { font-size: 22px; flex-shrink: 0; }
+  .option span { font-size: 15px; font-weight: 500; color: #5a3e2b; }
+  .footer { margin-top: 36px; display: flex; justify-content: space-between; align-items: center; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #e0c9b0; }
+  .dot.active { background: #c8824a; width: 20px; border-radius: 4px; }
+  .btn { background: #c8824a; color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .label { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(80,40,10,0.8); color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="label">☕ ESTILO 4 — Quente & Aconchegante</div>
+<div class="card">
+  <span class="icon">☕</span>
+  <span class="tag">Pergunta 2 de 5</span>
+  <h2>Qual é o seu fim de semana ideal?</h2>
+  <p class="subtitle">Seja honesto — não existe resposta errada.</p>
+  <div class="options">
+    <div class="option"><span class="emoji">🏔️</span><span>Aventura ao ar livre</span></div>
+    <div class="option"><span class="emoji">🛋️</span><span>Netflix e relaxar em casa</span></div>
+    <div class="option"><span class="emoji">🎉</span><span>Sair com amigos</span></div>
+    <div class="option"><span class="emoji">📚</span><span>Ler em silêncio absoluto</span></div>
+  </div>
+  <div class="footer">
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <button class="btn">Próxima →</button>
+  </div>
+</div>
+</body>
+</html>
