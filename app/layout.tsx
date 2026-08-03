@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const nunito = Nunito({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  variable: "--font-nunito",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "Qual é a sua personalidade de café? | Basecamp Coffee",
-  description: "Descubra sua personalidade de café e a bebida perfeita para você.",
+  title: "Controle Financeiro",
+  description: "Gerencie suas finanças pessoais com facilidade",
 };
 
 export default function RootLayout({
@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${nunito.variable} h-full`}>
-      <body className="min-h-full flex flex-col font-nunito">{children}</body>
+    <html lang="pt-BR" className={`${inter.variable} h-full`}>
+      <body className="min-h-full bg-gray-50 font-inter">{children}</body>
     </html>
   );
 }

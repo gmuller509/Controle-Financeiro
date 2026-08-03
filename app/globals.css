@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-nunito: var(--font-nunito);
+  --font-inter: var(--font-inter);
 }
 
 * {
@@ -11,32 +11,23 @@
 }
 
 body {
-  font-family: var(--font-nunito), 'Nunito', sans-serif;
+  font-family: var(--font-inter), 'Inter', sans-serif;
 }
 
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes barGrow {
   from { width: 0%; }
 }
 
-.result-enter {
-  animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.result-enter-delay {
-  animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-}
-
-.bar-animated {
-  animation: barGrow 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
-}
+.slide-in { animation: slideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-in { animation: fadeIn 0.3s ease both; }
+.bar-grow { animation: barGrow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
