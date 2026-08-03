@@ -188,7 +188,7 @@ export default function Home() {
           <div style={styles.brand}>BASECAMP COFFEE</div>
           <h1 style={styles.introTitle}>Qual é a sua personalidade de café?</h1>
           <p style={styles.introSub}>
-            Responda 5 perguntas rápidas e descubra qual bebida combina com o seu jeito de ser.
+            Responda 8 perguntas rápidas e descubra qual bebida combina com o seu jeito de ser.
           </p>
           <button style={styles.btnPrimary} onClick={() => setPhase("quiz")}>
             Começar o quiz →
