@@ -102,6 +102,36 @@ const questions = [
       { emoji: "🍫", text: "Come algo gostoso", personality: "indulgent" },
     ],
   },
+  {
+    text: "Como você prefere trabalhar ou estudar?",
+    options: [
+      { emoji: "⚡", text: "Com metas agressivas e prazo curto", personality: "bold" },
+      { emoji: "🎨", text: "Com música e ambiente bonito", personality: "sweet" },
+      { emoji: "🔇", text: "Em silêncio total, sem distrações", personality: "zen" },
+      { emoji: "👥", text: "Em grupo, trocando ideias", personality: "social" },
+      { emoji: "🛋️", text: "Confortável, sem pressa", personality: "indulgent" },
+    ],
+  },
+  {
+    text: "O que você nunca abre mão em uma viagem?",
+    options: [
+      { emoji: "🗺️", text: "Aventura e lugares desconhecidos", personality: "bold" },
+      { emoji: "📸", text: "Fotos incríveis para guardar", personality: "sweet" },
+      { emoji: "😌", text: "Tranquilidade e ritmo próprio", personality: "zen" },
+      { emoji: "🧑‍🤝‍🧑", text: "Companhia boa para dividir tudo", personality: "social" },
+      { emoji: "🏨", text: "Hotel confortável e boa comida", personality: "indulgent" },
+    ],
+  },
+  {
+    text: "Como você costuma tomar suas refeições?",
+    options: [
+      { emoji: "⏱️", text: "Rápido, tem coisa mais importante", personality: "bold" },
+      { emoji: "🍰", text: "Sempre com sobremesa, obrigatório", personality: "sweet" },
+      { emoji: "🍱", text: "Simples, saudável e sem exagero", personality: "zen" },
+      { emoji: "🍽️", text: "Com alguém, é melhor junto", personality: "social" },
+      { emoji: "😋", text: "Com calma, aproveitando cada mordida", personality: "indulgent" },
+    ],
+  },
 ];
 
 type Phase = "intro" | "quiz" | "results";
