@@ -13,3 +13,30 @@
 body {
   font-family: var(--font-nunito), 'Nunito', sans-serif;
 }
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes barGrow {
+  from { width: 0%; }
+}
+
+.result-enter {
+  animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.result-enter-delay {
+  animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+.bar-animated {
+  animation: barGrow 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+}

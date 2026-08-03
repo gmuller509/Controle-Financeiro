@@ -243,7 +243,7 @@ export default function Home() {
 
   return (
     <div style={styles.bg}>
-      <div style={{ ...styles.card, maxWidth: 580, padding: 0, overflow: "hidden" }}>
+      <div className="result-enter" style={{ ...styles.card, maxWidth: 580, padding: 0, overflow: "hidden" }}>
 
         <div style={{ position: "relative", height: 260, width: "100%" }}>
           <Image src={top.image} alt={top.drink} fill style={{ objectFit: "cover" }} priority />
@@ -267,7 +267,7 @@ export default function Home() {
           <span style={{ ...styles.resultPct, color: top.color, fontSize: 18 }}>{top.percent}%</span>
         </div>
         <div style={{ ...styles.barWrap, margin: "0 28px 24px", height: 12 }}>
-          <div style={{ ...styles.barFill, width: `${top.percent}%`, background: top.color }} />
+          <div className="bar-animated" style={{ ...styles.barFill, width: `${top.percent}%`, background: top.color }} />
         </div>
 
         {secondary.length > 0 && (
