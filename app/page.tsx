@@ -381,9 +381,9 @@ function HomeTab({ filtered, onEdit, onAdd, goTo, picpay, bradesco, pix, income,
         <SectionHeader title="Faturas do mês" />
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {[
-            { key: "PICPAY", label: "PicPay", value: picpay, ...CARD_COLORS.PICPAY },
-            { key: "BRADESCO", label: "Bradesco", value: bradesco, ...CARD_COLORS.BRADESCO },
-            { key: "PIX", label: "Pix / Débito", value: pix, ...CARD_COLORS.PIX },
+            { key: "PICPAY", label: "PicPay", value: picpay, bg: CARD_COLORS.PICPAY.bg, color: CARD_COLORS.PICPAY.color },
+            { key: "BRADESCO", label: "Bradesco", value: bradesco, bg: CARD_COLORS.BRADESCO.bg, color: CARD_COLORS.BRADESCO.color },
+            { key: "PIX", label: "Pix / Débito", value: pix, bg: CARD_COLORS.PIX.bg, color: CARD_COLORS.PIX.color },
           ].map(({ key, label, value, bg, color }) => (
             <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", borderRadius: 14, background: bg }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -552,9 +552,9 @@ function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, m
           </div>
         )}
         {[
-          { label: "PicPay", value: picpay, icon: "💚", ...CARD_COLORS.PICPAY, txCount: filtered.filter(t => t.payment_method === "PICPAY").length },
-          { label: "Bradesco", value: bradesco, icon: "🟠", ...CARD_COLORS.BRADESCO, txCount: filtered.filter(t => t.payment_method === "BRADESCO").length },
-          { label: "Pix / Débito", value: pix, icon: "⚡", ...CARD_COLORS.PIX, txCount: filtered.filter(t => t.payment_method === "PIX").length },
+          { label: "PicPay", value: picpay, icon: "💚", bg: CARD_COLORS.PICPAY.bg, color: CARD_COLORS.PICPAY.color, txCount: filtered.filter(t => t.payment_method === "PICPAY").length },
+          { label: "Bradesco", value: bradesco, icon: "🟠", bg: CARD_COLORS.BRADESCO.bg, color: CARD_COLORS.BRADESCO.color, txCount: filtered.filter(t => t.payment_method === "BRADESCO").length },
+          { label: "Pix / Débito", value: pix, icon: "⚡", bg: CARD_COLORS.PIX.bg, color: CARD_COLORS.PIX.color, txCount: filtered.filter(t => t.payment_method === "PIX").length },
         ].map(({ label, value, icon, bg, color, txCount }) => (
           <div key={label} style={{ marginBottom: 12 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
