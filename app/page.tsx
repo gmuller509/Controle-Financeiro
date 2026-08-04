@@ -33,13 +33,24 @@ async function dbDelete(table: string, id: string) {
 }
 
 type Category = { id: string; name: string; icon: string; color: string; type: string };
-type Transaction = { id: string; description: string; amount: number; type: string; category_id: string; date: string; notes: string; created_at: string };
+type Transaction = {
+  id: string; description: string; amount: number; type: string;
+  category_id: string; date: string; notes: string;
+  payment_method: string | null; created_at: string;
+};
 type TxFull = Transaction & { categories: Category | null };
 type Tab = "home" | "transactions" | "reports";
+type CardFilter = "all" | "PICPAY" | "BRADESCO" | "PIX";
 
 const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const fmt = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 const fmtDate = (d: string) => { const [y,m,dd] = d.split("-"); return `${dd}/${m}/${y}`; };
+
+const CARD_COLORS: Record<string, { bg: string; color: string; label: string }> = {
+  PICPAY:   { bg: "#e6faf2", color: "#059669", label: "PicPay" },
+  BRADESCO: { bg: "#fff0e6", color: "#d97706", label: "Bradesco" },
+  PIX:      { bg: "#f0f5ff", color: "#4f46e5", label: "Pix" },
+};
 
 const NAV: { id: Tab; label: string; icon: string }[] = [
   { id: "home", label: "Início", icon: "🏠" },
@@ -63,6 +74,7 @@ export default function App() {
   const [form, setForm] = useState({
     description: "", amount: "", type: "expense" as "income" | "expense",
     category_id: "", date: today.toISOString().split("T")[0], notes: "",
+    payment_method: "PICPAY",
   });
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
@@ -91,6 +103,10 @@ export default function App() {
   const expense = filtered.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
   const balance = income - expense;
 
+  const picpayTotal = filtered.filter(t => t.type === "expense" && t.payment_method === "PICPAY").reduce((s, t) => s + Number(t.amount), 0);
+  const bradescoTotal = filtered.filter(t => t.type === "expense" && t.payment_method === "BRADESCO").reduce((s, t) => s + Number(t.amount), 0);
+  const pixTotal = filtered.filter(t => t.type === "expense" && t.payment_method === "PIX").reduce((s, t) => s + Number(t.amount), 0);
+
   const byCat = categories
     .filter(c => c.type === "expense")
     .map(c => ({ ...c, total: filtered.filter(t => t.category_id === c.id && t.type === "expense").reduce((s, t) => s + Number(t.amount), 0) }))
@@ -100,13 +116,17 @@ export default function App() {
   function openAdd() {
     setEditTx(null);
     const first = categories.find(c => c.type === "expense");
-    setForm({ description: "", amount: "", type: "expense", category_id: first?.id || "", date: today.toISOString().split("T")[0], notes: "" });
+    setForm({ description: "", amount: "", type: "expense", category_id: first?.id || "", date: today.toISOString().split("T")[0], notes: "", payment_method: "PICPAY" });
     setErr("");
     setModalOpen(true);
   }
   function openEdit(tx: TxFull) {
     setEditTx(tx);
-    setForm({ description: tx.description, amount: String(tx.amount), type: tx.type as "income" | "expense", category_id: tx.category_id || "", date: tx.date, notes: tx.notes || "" });
+    setForm({
+      description: tx.description, amount: String(tx.amount),
+      type: tx.type as "income" | "expense", category_id: tx.category_id || "",
+      date: tx.date, notes: tx.notes || "", payment_method: tx.payment_method || "PICPAY",
+    });
     setErr("");
     setModalOpen(true);
   }
@@ -115,7 +135,12 @@ export default function App() {
     if (!form.amount || isNaN(Number(form.amount)) || Number(form.amount) <= 0) { setErr("Informe um valor válido"); return; }
     setSaving(true); setErr("");
     try {
-      const payload = { description: form.description.trim(), amount: Number(form.amount), type: form.type, category_id: form.category_id || null, date: form.date, notes: form.notes.trim() || null };
+      const payload = {
+        description: form.description.trim(), amount: Number(form.amount),
+        type: form.type, category_id: form.category_id || null,
+        date: form.date, notes: form.notes.trim() || null,
+        payment_method: form.type === "expense" ? form.payment_method || null : null,
+      };
       if (editTx) await dbPatch("transactions", editTx.id, payload);
       else await dbPost("transactions", payload);
       setModalOpen(false);
@@ -131,40 +156,30 @@ export default function App() {
 
   const filteredCats = categories.filter(c => c.type === form.type);
 
+  const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); };
+  const nextMonth = () => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); };
+
   return (
     <>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.8} }
         * { box-sizing: border-box; }
         body { margin: 0; background: #f0f2f5; font-family: 'Inter',system-ui,sans-serif; }
-
         .layout { display: flex; min-height: 100vh; }
-
-        /* ── Sidebar (desktop) ── */
         .sidebar {
-          display: none;
-          width: 240px;
-          min-height: 100vh;
-          background: #1a1a2e;
-          flex-direction: column;
-          padding: 28px 16px;
-          position: fixed;
-          top: 0; left: 0; bottom: 0;
-          z-index: 30;
+          display: none; width: 240px; min-height: 100vh;
+          background: #1a1a2e; flex-direction: column;
+          padding: 28px 16px; position: fixed;
+          top: 0; left: 0; bottom: 0; z-index: 30;
         }
-        .sidebar-logo {
-          font-size: 18px; font-weight: 800; color: #fff;
-          padding: 0 8px; margin-bottom: 36px; letter-spacing: -0.5px;
-        }
+        .sidebar-logo { font-size: 18px; font-weight: 800; color: #fff; padding: 0 8px; margin-bottom: 36px; letter-spacing: -0.5px; }
         .sidebar-logo span { color: #818cf8; }
         .sidebar-nav-item {
           display: flex; align-items: center; gap: 12px;
           padding: 12px 16px; border-radius: 14px; cursor: pointer;
           border: none; background: none; width: 100%;
           text-align: left; font-size: 14px; font-weight: 500;
-          color: rgba(255,255,255,0.45); margin-bottom: 4px;
-          transition: all 0.15s;
+          color: rgba(255,255,255,0.45); margin-bottom: 4px; transition: all 0.15s;
         }
         .sidebar-nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); }
         .sidebar-nav-item.active { background: rgba(99,102,241,0.2); color: #a5b4fc; }
@@ -173,31 +188,16 @@ export default function App() {
           margin-top: auto; display: flex; align-items: center; justify-content: center;
           gap: 8px; padding: 14px; border-radius: 16px; border: none;
           background: linear-gradient(135deg,#6366f1,#8b5cf6);
-          color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
-          width: 100%; transition: opacity 0.15s;
+          color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
         }
-        .sidebar-add-btn:hover { opacity: 0.9; }
-
-        /* ── Main content ── */
         .main { flex: 1; display: flex; flex-direction: column; }
-
-        /* ── Top bar (mobile only) ── */
-        .topbar-header {
-          background: linear-gradient(145deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-          padding: 28px 20px 32px;
-        }
-
-        /* ── Bottom nav (mobile only) ── */
+        .topbar-header { background: linear-gradient(145deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); padding: 28px 20px 32px; }
         .bottom-nav {
           position: fixed; bottom: 0; left: 0; right: 0;
           background: #fff; border-top: 1px solid #f0f2f5;
-          display: flex; z-index: 40;
-          padding-bottom: env(safe-area-inset-bottom);
+          display: flex; z-index: 40; padding-bottom: env(safe-area-inset-bottom);
         }
-        .bottom-nav-item {
-          flex: 1; display: flex; flex-direction: column; align-items: center;
-          gap: 3px; padding: 10px 0 8px; background: none; border: none; cursor: pointer;
-        }
+        .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 0 8px; background: none; border: none; cursor: pointer; }
         .bottom-nav-icon { font-size: 20px; }
         .bottom-nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2px; }
         .bottom-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: #6366f1; }
@@ -209,38 +209,21 @@ export default function App() {
           cursor: pointer; display: flex; align-items: center; justify-content: center;
           box-shadow: 0 6px 20px rgba(99,102,241,0.45); z-index: 50;
         }
-
-        /* ── Desktop header bar ── */
-        .desktop-topbar {
-          display: none;
-          padding: 20px 32px 0;
-          align-items: center; justify-content: space-between;
-        }
+        .desktop-topbar { display: none; padding: 20px 32px 0; align-items: center; justify-content: space-between; }
         .desktop-topbar-title { font-size: 22px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
         .desktop-add-btn {
-          display: flex; align-items: center; gap: 8px;
-          padding: 10px 20px; border-radius: 14px; border: none;
+          display: flex; align-items: center; gap: 8px; padding: 10px 20px;
+          border-radius: 14px; border: none;
           background: linear-gradient(135deg,#6366f1,#8b5cf6);
           color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
         }
-
-        /* ── Desktop summary bar ── */
         .desktop-summary { display: none; padding: 20px 32px; gap: 16px; }
-        .desktop-summary-card {
-          flex: 1; border-radius: 20px; padding: 20px 24px;
-          display: flex; flex-direction: column; gap: 6px;
-        }
-
-        /* ── Content area ── */
+        .desktop-summary-card { flex: 1; border-radius: 20px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; }
         .content-area { padding: 16px 16px 100px; }
-
-        /* ── Period nav ── */
         .period-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .period-btn { border: none; background: rgba(255,255,255,0.1); color: #fff; width: 36px; height: 36px; border-radius: 12px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        /* ── Desktop overrides ── */
+        .card-badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
         @media (min-width: 768px) {
-          body { background: #f0f2f5; }
           .layout { padding-left: 240px; }
           .sidebar { display: flex; }
           .topbar-header { display: none; }
@@ -248,10 +231,7 @@ export default function App() {
           .desktop-topbar { display: flex; }
           .desktop-summary { display: flex; }
           .content-area { padding: 16px 32px 32px; max-width: 100%; }
-          .period-nav-wrapper {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 32px; margin-bottom: 0;
-          }
+          .period-nav-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 0 32px; margin-bottom: 0; }
           .period-nav { background: #fff; border-radius: 16px; padding: 10px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
           .period-btn { background: #f3f4f6; color: #374151; }
           .period-label { color: #374151; }
@@ -259,7 +239,6 @@ export default function App() {
       `}</style>
 
       <div className="layout">
-        {/* ── Sidebar (desktop) ── */}
         <aside className="sidebar">
           <div className="sidebar-logo">Minhas<span>Finanças</span></div>
           {NAV.map(n => (
@@ -271,17 +250,16 @@ export default function App() {
           <button onClick={openAdd} className="sidebar-add-btn">+ Novo lançamento</button>
         </aside>
 
-        {/* ── Main ── */}
         <main className="main">
           {/* Mobile header */}
           <div className="topbar-header">
             <div className="period-nav">
-              <button onClick={() => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); }} className="period-btn">‹</button>
+              <button onClick={prevMonth} className="period-btn">‹</button>
               <div style={{ textAlign: "center" }}>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2 }}>período</p>
                 <p style={{ color: "#fff", fontSize: 15, fontWeight: 600 }} className="period-label">{MONTHS[month]} {year}</p>
               </div>
-              <button onClick={() => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); }} className="period-btn">›</button>
+              <button onClick={nextMonth} className="period-btn">›</button>
             </div>
             <div style={{ textAlign: "center", margin: "20px 0" }}>
               <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, marginBottom: 8 }}>Saldo do mês</p>
@@ -294,6 +272,11 @@ export default function App() {
               <MiniCard label="Entradas" value={fmt(income)} color="#34d399" arrow="↑" />
               <MiniCard label="Saídas" value={fmt(expense)} color="#f87171" arrow="↓" />
             </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 10 }}>
+              <CardStat label="PicPay" value={fmt(picpayTotal)} color="#059669" bg="rgba(5,150,105,0.12)" />
+              <CardStat label="Bradesco" value={fmt(bradescoTotal)} color="#d97706" bg="rgba(217,119,6,0.12)" />
+              <CardStat label="Pix" value={fmt(pixTotal)} color="#818cf8" bg="rgba(129,140,248,0.12)" />
+            </div>
           </div>
 
           {/* Desktop top bar */}
@@ -303,9 +286,9 @@ export default function App() {
               <h1 className="desktop-topbar-title">{NAV.find(n => n.id === tab)?.label}</h1>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <button onClick={() => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); }} style={{ padding: "8px 14px", borderRadius: 12, border: "1.5px solid #e5e7eb", background: "#fff", cursor: "pointer", fontSize: 16, color: "#374151" }}>‹</button>
+              <button onClick={prevMonth} style={{ padding: "8px 14px", borderRadius: 12, border: "1.5px solid #e5e7eb", background: "#fff", cursor: "pointer", fontSize: 16, color: "#374151" }}>‹</button>
               <span style={{ fontSize: 14, fontWeight: 600, color: "#374151", minWidth: 120, textAlign: "center" }}>{MONTHS[month]} {year}</span>
-              <button onClick={() => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); }} style={{ padding: "8px 14px", borderRadius: 12, border: "1.5px solid #e5e7eb", background: "#fff", cursor: "pointer", fontSize: 16, color: "#374151" }}>›</button>
+              <button onClick={nextMonth} style={{ padding: "8px 14px", borderRadius: 12, border: "1.5px solid #e5e7eb", background: "#fff", cursor: "pointer", fontSize: 16, color: "#374151" }}>›</button>
               <button onClick={openAdd} className="desktop-add-btn">+ Adicionar</button>
             </div>
           </div>
@@ -314,9 +297,9 @@ export default function App() {
           <div className="desktop-summary">
             {[
               { label: "Saldo do mês", value: fmt(balance), bg: balance < 0 ? "#fff1f1" : "#f0fdf4", color: balance < 0 ? "#ef4444" : "#10b981", bold: true },
-              { label: "Total de entradas", value: fmt(income), bg: "#f0fdf4", color: "#10b981", bold: false },
-              { label: "Total de saídas", value: fmt(expense), bg: "#fff1f1", color: "#ef4444", bold: false },
-              { label: "Lançamentos", value: String(filtered.length), bg: "#f5f3ff", color: "#6366f1", bold: false },
+              { label: "Fatura PicPay", value: fmt(picpayTotal), bg: "#e6faf2", color: "#059669", bold: false },
+              { label: "Fatura Bradesco", value: fmt(bradescoTotal), bg: "#fff7ed", color: "#d97706", bold: false },
+              { label: "Pix / Débito", value: fmt(pixTotal), bg: "#f5f3ff", color: "#6366f1", bold: false },
             ].map(c => (
               <div key={c.label} className="desktop-summary-card" style={{ background: c.bg }}>
                 <p style={{ fontSize: 12, color: "#6b7280" }}>{c.label}</p>
@@ -325,7 +308,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Content */}
           <div className="content-area">
             {loading ? (
               <div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
@@ -333,16 +315,16 @@ export default function App() {
               </div>
             ) : (
               <>
-                {tab === "home" && <HomeTab filtered={filtered} onEdit={openEdit} onAdd={openAdd} goTo={setTab} />}
+                {tab === "home" && <HomeTab filtered={filtered} onEdit={openEdit} onAdd={openAdd} goTo={setTab} picpay={picpayTotal} bradesco={bradescoTotal} pix={pixTotal} income={income} expense={expense} />}
                 {tab === "transactions" && <TransactionsTab txs={filtered} onEdit={openEdit} onDelete={setDeleteId} />}
-                {tab === "reports" && <ReportsTab byCat={byCat} income={income} expense={expense} filtered={filtered} />}
+                {tab === "reports" && <ReportsTab byCat={byCat} income={income} expense={expense} filtered={filtered} picpay={picpayTotal} bradesco={bradescoTotal} pix={pixTotal} month={month} year={year} />}
               </>
             )}
           </div>
         </main>
       </div>
 
-      {/* ── Bottom nav (mobile) ── */}
+      {/* Bottom nav (mobile) */}
       <nav className="bottom-nav">
         {NAV.map(n => (
           <button key={n.id} onClick={() => setTab(n.id)} className="bottom-nav-item">
@@ -354,7 +336,7 @@ export default function App() {
         <button onClick={openAdd} className="fab">+</button>
       </nav>
 
-      {/* ── Modal ── */}
+      {/* Modal */}
       {modalOpen && (
         <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
           <div onClick={() => setModalOpen(false)} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }} />
@@ -371,6 +353,21 @@ export default function App() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <Field label="Descrição"><input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Ex: Mercado, Salário..." style={inputStyle} /></Field>
               <Field label="Valor (R$)"><input type="number" min="0" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} placeholder="0,00" style={inputStyle} /></Field>
+              {form.type === "expense" && (
+                <Field label="Forma de pagamento">
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+                    {["PICPAY", "BRADESCO", "PIX"].map(m => {
+                      const c = CARD_COLORS[m];
+                      const active = form.payment_method === m;
+                      return (
+                        <button key={m} onClick={() => setForm(f => ({ ...f, payment_method: m }))} style={{ padding: "10px 0", borderRadius: 12, border: `2px solid ${active ? c.color : "#e5e7eb"}`, background: active ? c.bg : "#fff", color: active ? c.color : "#9ca3af", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
+                          {c.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </Field>
+              )}
               <Field label="Categoria">
                 <select value={form.category_id} onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))} style={inputStyle}>
                   <option value="">Sem categoria</option>
@@ -388,7 +385,7 @@ export default function App() {
         </div>
       )}
 
-      {/* ── Delete confirm ── */}
+      {/* Delete confirm */}
       {deleteId && (
         <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
           <div onClick={() => setDeleteId(null)} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }} />
@@ -407,12 +404,49 @@ export default function App() {
   );
 }
 
-/* ── Abas ── */
+/* ── Tabs ── */
 
-function HomeTab({ filtered, onEdit, onAdd, goTo }: { filtered: TxFull[]; onEdit: (tx: TxFull) => void; onAdd: () => void; goTo: (t: Tab) => void }) {
+function HomeTab({ filtered, onEdit, onAdd, goTo, picpay, bradesco, pix, income, expense }: {
+  filtered: TxFull[]; onEdit: (tx: TxFull) => void; onAdd: () => void;
+  goTo: (t: Tab) => void; picpay: number; bradesco: number; pix: number; income: number; expense: number;
+}) {
   const recent = filtered.slice(0, 6);
+  const total = picpay + bradesco + pix;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Per-card summary (mobile only — desktop shows in topbar) */}
+      <Card>
+        <SectionHeader title="Faturas do mês" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {[
+            { key: "PICPAY", label: "PicPay", value: picpay, ...CARD_COLORS.PICPAY },
+            { key: "BRADESCO", label: "Bradesco", value: bradesco, ...CARD_COLORS.BRADESCO },
+            { key: "PIX", label: "Pix / Débito", value: pix, ...CARD_COLORS.PIX },
+          ].map(({ key, label, value, bg, color }) => (
+            <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", borderRadius: 14, background: bg }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: color + "22", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 16 }}>{key === "PICPAY" ? "💚" : key === "BRADESCO" ? "🟠" : "⚡"}</span>
+                </div>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{label}</p>
+                  {total > 0 && <p style={{ fontSize: 11, color: "#9ca3af" }}>{((value / (expense || 1)) * 100).toFixed(0)}% dos gastos</p>}
+                </div>
+              </div>
+              <p style={{ fontSize: 15, fontWeight: 700, color }}>{fmt(value)}</p>
+            </div>
+          ))}
+        </div>
+        {income > 0 && (
+          <div style={{ marginTop: 12, padding: "10px 14px", borderRadius: 12, background: "#f9fafb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 12, color: "#6b7280" }}>Comprometimento da renda</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: expense / income > 0.8 ? "#ef4444" : expense / income > 0.6 ? "#d97706" : "#10b981" }}>
+              {((expense / income) * 100).toFixed(0)}%
+            </span>
+          </div>
+        )}
+      </Card>
+
       {recent.length === 0 ? (
         <Card>
           <Empty />
@@ -430,18 +464,37 @@ function HomeTab({ filtered, onEdit, onAdd, goTo }: { filtered: TxFull[]; onEdit
 
 function TransactionsTab({ txs, onEdit, onDelete }: { txs: TxFull[]; onEdit: (tx: TxFull) => void; onDelete: (id: string) => void }) {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "income" | "expense">("all");
-  const items = txs.filter(tx => (filter === "all" || tx.type === filter) && tx.description.toLowerCase().includes(search.toLowerCase()));
+  const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">("all");
+  const [cardFilter, setCardFilter] = useState<CardFilter>("all");
+
+  const items = txs.filter(tx => {
+    if (typeFilter !== "all" && tx.type !== typeFilter) return false;
+    if (cardFilter !== "all" && tx.payment_method !== cardFilter) return false;
+    if (!tx.description.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <Card>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍  Buscar..." style={{ ...inputStyle, background: "#f3f4f6", border: "none", marginBottom: 10 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 8 }}>
           {(["all", "income", "expense"] as const).map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{ padding: "8px 0", borderRadius: 10, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", background: filter === f ? "#1a1a2e" : "#f3f4f6", color: filter === f ? "#fff" : "#6b7280" }}>
+            <button key={f} onClick={() => setTypeFilter(f)} style={{ padding: "8px 0", borderRadius: 10, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", background: typeFilter === f ? "#1a1a2e" : "#f3f4f6", color: typeFilter === f ? "#fff" : "#6b7280" }}>
               {f === "all" ? "Todos" : f === "income" ? "Entradas" : "Saídas"}
             </button>
           ))}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
+          {(["all", "PICPAY", "BRADESCO", "PIX"] as const).map(f => {
+            const active = cardFilter === f;
+            const c = f !== "all" ? CARD_COLORS[f] : null;
+            return (
+              <button key={f} onClick={() => setCardFilter(f)} style={{ padding: "7px 0", borderRadius: 10, border: `1.5px solid ${active && c ? c.color : active ? "#1a1a2e" : "#e5e7eb"}`, fontSize: 11, fontWeight: 700, cursor: "pointer", background: active ? (c ? c.bg : "#1a1a2e") : "#fff", color: active ? (c ? c.color : "#fff") : "#9ca3af" }}>
+                {f === "all" ? "Todos" : f === "PICPAY" ? "PicPay" : f === "BRADESCO" ? "Bradesco" : "Pix"}
+              </button>
+            );
+          })}
         </div>
       </Card>
       {items.length === 0
@@ -452,36 +505,69 @@ function TransactionsTab({ txs, onEdit, onDelete }: { txs: TxFull[]; onEdit: (tx
   );
 }
 
-function ReportsTab({ byCat, income, expense, filtered }: { byCat: (Category & { total: number })[]; income: number; expense: number; filtered: TxFull[] }) {
+function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, month, year }: {
+  byCat: (Category & { total: number })[]; income: number; expense: number;
+  filtered: TxFull[]; picpay: number; bradesco: number; pix: number; month: number; year: number;
+}) {
   const today = new Date();
-  const day = today.getDate();
-  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
+  const day = isCurrentMonth ? today.getDate() : new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const dailyRate = day > 0 ? expense / day : 0;
-  const projected = dailyRate * daysInMonth;
+  const projected = isCurrentMonth ? dailyRate * daysInMonth : expense;
   const savings = income > 0 ? ((income - expense) / income) * 100 : 0;
   const expTxs = filtered.filter(t => t.type === "expense");
   const avgTx = expTxs.length > 0 ? expense / expTxs.length : 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Per-card breakdown */}
       <Card>
-        <SectionHeader title="Previsão do mês" />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          {[
-            { label: "Gasto médio/dia", value: fmt(dailyRate), color: "#374151" },
-            { label: "Projeção de gastos", value: fmt(projected), color: "#374151" },
-            { label: "Saldo estimado", value: fmt(income - projected), color: income - projected < 0 ? "#ef4444" : "#10b981" },
-            { label: "Taxa de economia", value: `${savings.toFixed(1)}%`, color: savings < 0 ? "#ef4444" : "#10b981" },
-          ].map(({ label, value, color }) => (
-            <div key={label} style={{ background: "#f9fafb", borderRadius: 14, padding: 14 }}>
-              <p style={{ fontSize: 11, color: "#9ca3af", marginBottom: 5 }}>{label}</p>
-              <p style={{ fontSize: 16, fontWeight: 700, color }}>{value}</p>
+        <SectionHeader title="Por cartão / forma de pagamento" />
+        {[
+          { label: "PicPay", value: picpay, icon: "💚", ...CARD_COLORS.PICPAY, txCount: filtered.filter(t => t.payment_method === "PICPAY").length },
+          { label: "Bradesco", value: bradesco, icon: "🟠", ...CARD_COLORS.BRADESCO, txCount: filtered.filter(t => t.payment_method === "BRADESCO").length },
+          { label: "Pix / Débito", value: pix, icon: "⚡", ...CARD_COLORS.PIX, txCount: filtered.filter(t => t.payment_method === "PIX").length },
+        ].map(({ label, value, icon, bg, color, txCount }) => (
+          <div key={label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f3f4f6" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ width: 34, height: 34, borderRadius: 10, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>{icon}</span>
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{label}</p>
+                <p style={{ fontSize: 11, color: "#9ca3af" }}>{txCount} lançamento{txCount !== 1 ? "s" : ""} · {expense > 0 ? ((value / expense) * 100).toFixed(0) : 0}% do total</p>
+              </div>
             </div>
-          ))}
+            <p style={{ fontSize: 15, fontWeight: 700, color }}>{fmt(value)}</p>
+          </div>
+        ))}
+        <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", fontSize: 12, color: "#6b7280" }}>
+          <span>Total de gastos</span>
+          <span style={{ fontWeight: 700, color: "#111" }}>{fmt(expense)}</span>
         </div>
-        <p style={{ fontSize: 11, color: "#d1d5db", marginTop: 10 }}>Baseado nos {day} de {daysInMonth} dias do mês</p>
       </Card>
 
+      {/* Projeção */}
+      {isCurrentMonth && (
+        <Card>
+          <SectionHeader title="Projeção do mês" />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {[
+              { label: "Gasto médio/dia", value: fmt(dailyRate), color: "#374151" },
+              { label: "Projeção de gastos", value: fmt(projected), color: "#374151" },
+              { label: "Saldo estimado", value: fmt(income - projected), color: income - projected < 0 ? "#ef4444" : "#10b981" },
+              { label: "Taxa de economia", value: `${savings.toFixed(1)}%`, color: savings < 0 ? "#ef4444" : "#10b981" },
+            ].map(({ label, value, color }) => (
+              <div key={label} style={{ background: "#f9fafb", borderRadius: 14, padding: 14 }}>
+                <p style={{ fontSize: 11, color: "#9ca3af", marginBottom: 5 }}>{label}</p>
+                <p style={{ fontSize: 16, fontWeight: 700, color }}>{value}</p>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 11, color: "#d1d5db", marginTop: 10 }}>Baseado nos {day} de {daysInMonth} dias do mês</p>
+        </Card>
+      )}
+
+      {/* Resumo geral */}
       <Card>
         <SectionHeader title="Resumo geral" />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -499,6 +585,7 @@ function ReportsTab({ byCat, income, expense, filtered }: { byCat: (Category & {
         </div>
       </Card>
 
+      {/* Por categoria */}
       {byCat.length > 0 && (
         <Card>
           <SectionHeader title="Gastos por categoria" />
@@ -525,7 +612,16 @@ function ReportsTab({ byCat, income, expense, filtered }: { byCat: (Category & {
   );
 }
 
-/* ── Componentes base ── */
+/* ── Base components ── */
+
+function CardStat({ label, value, color, bg }: { label: string; value: string; color: string; bg: string }) {
+  return (
+    <div style={{ background: bg, borderRadius: 12, padding: "10px 12px", textAlign: "center" }}>
+      <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 9, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>{label}</p>
+      <p style={{ color, fontSize: 12, fontWeight: 700 }}>{value}</p>
+    </div>
+  );
+}
 
 function MiniCard({ label, value, color, arrow }: { label: string; value: string; color: string; arrow: string }) {
   return (
@@ -540,7 +636,7 @@ function MiniCard({ label, value, color, arrow }: { label: string; value: string
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return <div style={{ background: "#fff", borderRadius: 20, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", marginBottom: 0 }}>{children}</div>;
+  return <div style={{ background: "#fff", borderRadius: 20, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>{children}</div>;
 }
 
 function SectionHeader({ title, action }: { title: string; action?: { label: string; onClick: () => void } }) {
@@ -553,6 +649,7 @@ function SectionHeader({ title, action }: { title: string; action?: { label: str
 }
 
 function TxItem({ tx, onEdit, onDelete }: { tx: TxFull; onEdit: (tx: TxFull) => void; onDelete?: (id: string) => void }) {
+  const card = tx.payment_method ? CARD_COLORS[tx.payment_method] : null;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: "1px solid #f3f4f6" }}>
       <div style={{ width: 42, height: 42, borderRadius: 14, background: (tx.categories?.color || "#6b7280") + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>
@@ -560,7 +657,14 @@ function TxItem({ tx, onEdit, onDelete }: { tx: TxFull; onEdit: (tx: TxFull) => 
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontSize: 14, fontWeight: 600, color: "#111", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tx.description}</p>
-        <p style={{ fontSize: 12, color: "#9ca3af", marginTop: 2 }}>{tx.categories?.name || "Sem categoria"} · {fmtDate(tx.date)}</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
+          <span style={{ fontSize: 12, color: "#9ca3af" }}>{tx.categories?.name || "Sem categoria"} · {fmtDate(tx.date)}</span>
+          {card && (
+            <span className="card-badge" style={{ background: card.bg, color: card.color }}>
+              {tx.payment_method === "PICPAY" ? "PicPay" : tx.payment_method === "BRADESCO" ? "Bradesco" : "Pix"}
+            </span>
+          )}
+        </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 14, fontWeight: 700, color: tx.type === "income" ? "#10b981" : "#ef4444", whiteSpace: "nowrap" }}>
