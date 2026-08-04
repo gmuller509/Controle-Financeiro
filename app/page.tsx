@@ -495,7 +495,7 @@ function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, m
 
   // Monthly trend — last 5 months from current
   const monthlyData = (() => {
-    const result = [];
+    const result: { key: string; label: string; picpay: number; bradesco: number; pix: number; other: number; income: number; total: number }[] = [];
     for (let i = 4; i >= 0; i--) {
       let m = month - i;
       let y = year;
