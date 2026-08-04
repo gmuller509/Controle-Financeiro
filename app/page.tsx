@@ -527,7 +527,10 @@ function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, m
             { color: "#10b981", label: "Entradas", dashed: true },
           ].map(({ color, label, dashed }) => (
             <div key={label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <div style={{ width: 24, height: 3, borderRadius: 2, background: color, border: dashed ? "none" : undefined, borderTop: dashed ? `2px dashed ${color}` : undefined, height: dashed ? 0 : 3 }} />
+              {dashed
+                ? <svg width="24" height="3"><line x1="0" y1="1.5" x2="24" y2="1.5" stroke={color} strokeWidth="2" strokeDasharray="4,2" /></svg>
+                : <div style={{ width: 24, height: 3, borderRadius: 2, background: color }} />
+              }
               <span style={{ fontSize: 11, color: "#6b7280" }}>{label}</span>
             </div>
           ))}
