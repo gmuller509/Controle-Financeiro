@@ -43,6 +43,7 @@ type Tab = "home" | "transactions" | "reports";
 type CardFilter = "all" | "PICPAY" | "BRADESCO" | "PIX";
 
 const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const MONTHS_SHORT = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const fmt = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 const fmtDate = (d: string) => { const [y,m,dd] = d.split("-"); return `${dd}/${m}/${y}`; };
 
@@ -155,7 +156,6 @@ export default function App() {
   }
 
   const filteredCats = categories.filter(c => c.type === form.type);
-
   const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); };
   const nextMonth = () => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); };
 
@@ -166,57 +166,25 @@ export default function App() {
         * { box-sizing: border-box; }
         body { margin: 0; background: #f0f2f5; font-family: 'Inter',system-ui,sans-serif; }
         .layout { display: flex; min-height: 100vh; }
-        .sidebar {
-          display: none; width: 240px; min-height: 100vh;
-          background: #1a1a2e; flex-direction: column;
-          padding: 28px 16px; position: fixed;
-          top: 0; left: 0; bottom: 0; z-index: 30;
-        }
+        .sidebar { display: none; width: 240px; min-height: 100vh; background: #1a1a2e; flex-direction: column; padding: 28px 16px; position: fixed; top: 0; left: 0; bottom: 0; z-index: 30; }
         .sidebar-logo { font-size: 18px; font-weight: 800; color: #fff; padding: 0 8px; margin-bottom: 36px; letter-spacing: -0.5px; }
         .sidebar-logo span { color: #818cf8; }
-        .sidebar-nav-item {
-          display: flex; align-items: center; gap: 12px;
-          padding: 12px 16px; border-radius: 14px; cursor: pointer;
-          border: none; background: none; width: 100%;
-          text-align: left; font-size: 14px; font-weight: 500;
-          color: rgba(255,255,255,0.45); margin-bottom: 4px; transition: all 0.15s;
-        }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.45); margin-bottom: 4px; transition: all 0.15s; }
         .sidebar-nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); }
         .sidebar-nav-item.active { background: rgba(99,102,241,0.2); color: #a5b4fc; }
         .sidebar-nav-icon { font-size: 18px; width: 24px; text-align: center; }
-        .sidebar-add-btn {
-          margin-top: auto; display: flex; align-items: center; justify-content: center;
-          gap: 8px; padding: 14px; border-radius: 16px; border: none;
-          background: linear-gradient(135deg,#6366f1,#8b5cf6);
-          color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
-        }
+        .sidebar-add-btn { margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 16px; border: none; background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
         .main { flex: 1; display: flex; flex-direction: column; }
         .topbar-header { background: linear-gradient(145deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); padding: 28px 20px 32px; }
-        .bottom-nav {
-          position: fixed; bottom: 0; left: 0; right: 0;
-          background: #fff; border-top: 1px solid #f0f2f5;
-          display: flex; z-index: 40; padding-bottom: env(safe-area-inset-bottom);
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #f0f2f5; display: flex; z-index: 40; padding-bottom: env(safe-area-inset-bottom); }
         .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 0 8px; background: none; border: none; cursor: pointer; }
         .bottom-nav-icon { font-size: 20px; }
         .bottom-nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2px; }
         .bottom-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: #6366f1; }
-        .fab {
-          position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
-          width: 52px; height: 52px; border-radius: 18px;
-          background: linear-gradient(135deg,#6366f1,#8b5cf6);
-          border: 3px solid #f0f2f5; color: #fff; font-size: 26px;
-          cursor: pointer; display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 6px 20px rgba(99,102,241,0.45); z-index: 50;
-        }
+        .fab { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); width: 52px; height: 52px; border-radius: 18px; background: linear-gradient(135deg,#6366f1,#8b5cf6); border: 3px solid #f0f2f5; color: #fff; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(99,102,241,0.45); z-index: 50; }
         .desktop-topbar { display: none; padding: 20px 32px 0; align-items: center; justify-content: space-between; }
         .desktop-topbar-title { font-size: 22px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
-        .desktop-add-btn {
-          display: flex; align-items: center; gap: 8px; padding: 10px 20px;
-          border-radius: 14px; border: none;
-          background: linear-gradient(135deg,#6366f1,#8b5cf6);
-          color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
-        }
+        .desktop-add-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 14px; border: none; background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; }
         .desktop-summary { display: none; padding: 20px 32px; gap: 16px; }
         .desktop-summary-card { flex: 1; border-radius: 20px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; }
         .content-area { padding: 16px 16px 100px; }
@@ -231,10 +199,7 @@ export default function App() {
           .desktop-topbar { display: flex; }
           .desktop-summary { display: flex; }
           .content-area { padding: 16px 32px 32px; max-width: 100%; }
-          .period-nav-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 0 32px; margin-bottom: 0; }
-          .period-nav { background: #fff; border-radius: 16px; padding: 10px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
           .period-btn { background: #f3f4f6; color: #374151; }
-          .period-label { color: #374151; }
         }
       `}</style>
 
@@ -243,8 +208,7 @@ export default function App() {
           <div className="sidebar-logo">Minhas<span>Finanças</span></div>
           {NAV.map(n => (
             <button key={n.id} onClick={() => setTab(n.id)} className={`sidebar-nav-item${tab === n.id ? " active" : ""}`}>
-              <span className="sidebar-nav-icon">{n.icon}</span>
-              {n.label}
+              <span className="sidebar-nav-icon">{n.icon}</span>{n.label}
             </button>
           ))}
           <button onClick={openAdd} className="sidebar-add-btn">+ Novo lançamento</button>
@@ -257,7 +221,7 @@ export default function App() {
               <button onClick={prevMonth} className="period-btn">‹</button>
               <div style={{ textAlign: "center" }}>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 2 }}>período</p>
-                <p style={{ color: "#fff", fontSize: 15, fontWeight: 600 }} className="period-label">{MONTHS[month]} {year}</p>
+                <p style={{ color: "#fff", fontSize: 15, fontWeight: 600 }}>{MONTHS[month]} {year}</p>
               </div>
               <button onClick={nextMonth} className="period-btn">›</button>
             </div>
@@ -317,14 +281,14 @@ export default function App() {
               <>
                 {tab === "home" && <HomeTab filtered={filtered} onEdit={openEdit} onAdd={openAdd} goTo={setTab} picpay={picpayTotal} bradesco={bradescoTotal} pix={pixTotal} income={income} expense={expense} />}
                 {tab === "transactions" && <TransactionsTab txs={filtered} onEdit={openEdit} onDelete={setDeleteId} />}
-                {tab === "reports" && <ReportsTab byCat={byCat} income={income} expense={expense} filtered={filtered} picpay={picpayTotal} bradesco={bradescoTotal} pix={pixTotal} month={month} year={year} />}
+                {tab === "reports" && <ReportsTab byCat={byCat} income={income} expense={expense} filtered={filtered} picpay={picpayTotal} bradesco={bradescoTotal} pix={pixTotal} month={month} year={year} allTransactions={transactions} />}
               </>
             )}
           </div>
         </main>
       </div>
 
-      {/* Bottom nav (mobile) */}
+      {/* Bottom nav */}
       <nav className="bottom-nav">
         {NAV.map(n => (
           <button key={n.id} onClick={() => setTab(n.id)} className="bottom-nav-item">
@@ -411,10 +375,8 @@ function HomeTab({ filtered, onEdit, onAdd, goTo, picpay, bradesco, pix, income,
   goTo: (t: Tab) => void; picpay: number; bradesco: number; pix: number; income: number; expense: number;
 }) {
   const recent = filtered.slice(0, 6);
-  const total = picpay + bradesco + pix;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Per-card summary (mobile only — desktop shows in topbar) */}
       <Card>
         <SectionHeader title="Faturas do mês" />
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -425,20 +387,31 @@ function HomeTab({ filtered, onEdit, onAdd, goTo, picpay, bradesco, pix, income,
           ].map(({ key, label, value, bg, color }) => (
             <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", borderRadius: 14, background: bg }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: color + "22", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 16 }}>{key === "PICPAY" ? "💚" : key === "BRADESCO" ? "🟠" : "⚡"}</span>
-                </div>
+                <span style={{ width: 34, height: 34, borderRadius: 10, background: color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
+                  {key === "PICPAY" ? "💚" : key === "BRADESCO" ? "🟠" : "⚡"}
+                </span>
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{label}</p>
-                  {total > 0 && <p style={{ fontSize: 11, color: "#9ca3af" }}>{((value / (expense || 1)) * 100).toFixed(0)}% dos gastos</p>}
+                  {expense > 0 && <p style={{ fontSize: 11, color: "#9ca3af" }}>{((value / expense) * 100).toFixed(0)}% dos gastos</p>}
                 </div>
               </div>
               <p style={{ fontSize: 15, fontWeight: 700, color }}>{fmt(value)}</p>
             </div>
           ))}
         </div>
+        {expense > 0 && (
+          <div style={{ marginTop: 12, height: 8, borderRadius: 8, overflow: "hidden", display: "flex" }}>
+            {[
+              { v: picpay, c: "#059669" },
+              { v: bradesco, c: "#d97706" },
+              { v: pix, c: "#4f46e5" },
+            ].filter(s => s.v > 0).map((s, i) => (
+              <div key={i} style={{ width: `${(s.v / expense) * 100}%`, background: s.c, transition: "width 0.8s ease" }} />
+            ))}
+          </div>
+        )}
         {income > 0 && (
-          <div style={{ marginTop: 12, padding: "10px 14px", borderRadius: 12, background: "#f9fafb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ marginTop: 10, padding: "10px 14px", borderRadius: 12, background: "#f9fafb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: 12, color: "#6b7280" }}>Comprometimento da renda</span>
             <span style={{ fontSize: 13, fontWeight: 700, color: expense / income > 0.8 ? "#ef4444" : expense / income > 0.6 ? "#d97706" : "#10b981" }}>
               {((expense / income) * 100).toFixed(0)}%
@@ -505,9 +478,10 @@ function TransactionsTab({ txs, onEdit, onDelete }: { txs: TxFull[]; onEdit: (tx
   );
 }
 
-function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, month, year }: {
+function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, month, year, allTransactions }: {
   byCat: (Category & { total: number })[]; income: number; expense: number;
-  filtered: TxFull[]; picpay: number; bradesco: number; pix: number; month: number; year: number;
+  filtered: TxFull[]; picpay: number; bradesco: number; pix: number;
+  month: number; year: number; allTransactions: TxFull[];
 }) {
   const today = new Date();
   const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
@@ -519,32 +493,115 @@ function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, m
   const expTxs = filtered.filter(t => t.type === "expense");
   const avgTx = expTxs.length > 0 ? expense / expTxs.length : 0;
 
+  // Monthly trend — last 5 months from current
+  const monthlyData = (() => {
+    const result = [];
+    for (let i = 4; i >= 0; i--) {
+      let m = month - i;
+      let y = year;
+      while (m < 0) { m += 12; y--; }
+      const key = `${y}-${String(m + 1).padStart(2, "0")}`;
+      const mTxs = allTransactions.filter(tx => tx.date.startsWith(key));
+      const pp = mTxs.filter(t => t.type === "expense" && t.payment_method === "PICPAY").reduce((s, t) => s + Number(t.amount), 0);
+      const br = mTxs.filter(t => t.type === "expense" && t.payment_method === "BRADESCO").reduce((s, t) => s + Number(t.amount), 0);
+      const px = mTxs.filter(t => t.type === "expense" && t.payment_method === "PIX").reduce((s, t) => s + Number(t.amount), 0);
+      const other = mTxs.filter(t => t.type === "expense" && !t.payment_method).reduce((s, t) => s + Number(t.amount), 0);
+      const inc = mTxs.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
+      result.push({ key, label: MONTHS_SHORT[m], picpay: pp, bradesco: br, pix: px, other, income: inc, total: pp + br + px + other });
+    }
+    return result;
+  })();
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Per-card breakdown */}
+
+      {/* Tendência mensal */}
+      <Card>
+        <SectionHeader title="Tendência dos últimos meses" />
+        <MonthlyBarsChart data={monthlyData} />
+        <div style={{ display: "flex", gap: 12, marginTop: 12, flexWrap: "wrap" }}>
+          {[
+            { color: "#059669", label: "PicPay" },
+            { color: "#d97706", label: "Bradesco" },
+            { color: "#4f46e5", label: "Pix/Débito" },
+            { color: "#10b981", label: "Entradas", dashed: true },
+          ].map(({ color, label, dashed }) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <div style={{ width: 24, height: 3, borderRadius: 2, background: color, border: dashed ? "none" : undefined, borderTop: dashed ? `2px dashed ${color}` : undefined, height: dashed ? 0 : 3 }} />
+              <span style={{ fontSize: 11, color: "#6b7280" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Por cartão */}
       <Card>
         <SectionHeader title="Por cartão / forma de pagamento" />
+        {expense > 0 && (
+          <div style={{ height: 10, borderRadius: 8, overflow: "hidden", display: "flex", marginBottom: 16 }}>
+            {[
+              { v: picpay, c: "#059669" },
+              { v: bradesco, c: "#d97706" },
+              { v: pix, c: "#4f46e5" },
+            ].filter(s => s.v > 0).map((s, i) => (
+              <div key={i} style={{ width: `${(s.v / expense) * 100}%`, background: s.c, transition: "width 0.8s ease" }} />
+            ))}
+          </div>
+        )}
         {[
           { label: "PicPay", value: picpay, icon: "💚", ...CARD_COLORS.PICPAY, txCount: filtered.filter(t => t.payment_method === "PICPAY").length },
           { label: "Bradesco", value: bradesco, icon: "🟠", ...CARD_COLORS.BRADESCO, txCount: filtered.filter(t => t.payment_method === "BRADESCO").length },
           { label: "Pix / Débito", value: pix, icon: "⚡", ...CARD_COLORS.PIX, txCount: filtered.filter(t => t.payment_method === "PIX").length },
         ].map(({ label, value, icon, bg, color, txCount }) => (
-          <div key={label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f3f4f6" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ width: 34, height: 34, borderRadius: 10, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>{icon}</span>
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{label}</p>
-                <p style={{ fontSize: 11, color: "#9ca3af" }}>{txCount} lançamento{txCount !== 1 ? "s" : ""} · {expense > 0 ? ((value / expense) * 100).toFixed(0) : 0}% do total</p>
+          <div key={label} style={{ marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ width: 30, height: 30, borderRadius: 9, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>{icon}</span>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{label}</p>
+                  <p style={{ fontSize: 11, color: "#9ca3af" }}>{txCount} lançamento{txCount !== 1 ? "s" : ""} · {expense > 0 ? ((value / expense) * 100).toFixed(0) : 0}%</p>
+                </div>
               </div>
+              <p style={{ fontSize: 14, fontWeight: 700, color }}>{fmt(value)}</p>
             </div>
-            <p style={{ fontSize: 15, fontWeight: 700, color }}>{fmt(value)}</p>
+            <div style={{ height: 5, background: "#f3f4f6", borderRadius: 4, overflow: "hidden" }}>
+              <div style={{ height: "100%", background: color, width: expense > 0 ? `${(value / expense) * 100}%` : "0%", borderRadius: 4, transition: "width 0.8s ease" }} />
+            </div>
           </div>
         ))}
-        <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", fontSize: 12, color: "#6b7280" }}>
-          <span>Total de gastos</span>
-          <span style={{ fontWeight: 700, color: "#111" }}>{fmt(expense)}</span>
-        </div>
       </Card>
+
+      {/* Gastos por categoria — donut + lista */}
+      {byCat.length > 0 && (
+        <Card>
+          <SectionHeader title="Gastos por categoria" />
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            <DonutChart
+              slices={byCat.slice(0, 6).map(c => ({ value: c.total, color: c.color, label: c.name }))}
+              total={expense}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {byCat.slice(0, 6).map((c, i) => (
+                <div key={c.id} style={{ marginBottom: i < Math.min(byCat.length, 6) - 1 ? 10 : 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: c.color, flexShrink: 0 }} />
+                      <span style={{ fontSize: 12, fontWeight: 600, color: "#374151", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.icon} {c.name}</span>
+                    </div>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#111", whiteSpace: "nowrap", marginLeft: 8 }}>{fmt(c.total)}</span>
+                  </div>
+                  <div style={{ height: 4, background: "#f3f4f6", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ height: "100%", background: c.color, width: `${(c.total / byCat[0].total) * 100}%`, transition: "width 0.8s ease" }} />
+                  </div>
+                </div>
+              ))}
+              {byCat.length > 6 && (
+                <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 8 }}>+ {byCat.length - 6} outras categorias</p>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Projeção */}
       {isCurrentMonth && (
@@ -584,31 +641,107 @@ function ReportsTab({ byCat, income, expense, filtered, picpay, bradesco, pix, m
           ))}
         </div>
       </Card>
-
-      {/* Por categoria */}
-      {byCat.length > 0 && (
-        <Card>
-          <SectionHeader title="Gastos por categoria" />
-          {byCat.map((c, i) => (
-            <div key={c.id} style={{ marginBottom: i < byCat.length - 1 ? 16 : 0 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ width: 34, height: 34, borderRadius: 11, background: c.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>{c.icon}</span>
-                  <div>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{c.name}</p>
-                    <p style={{ fontSize: 11, color: "#9ca3af" }}>{((c.total / expense) * 100).toFixed(1)}% do total</p>
-                  </div>
-                </div>
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{fmt(c.total)}</span>
-              </div>
-              <div style={{ height: 6, background: "#f3f4f6", borderRadius: 6, overflow: "hidden" }}>
-                <div style={{ height: "100%", borderRadius: 6, background: c.color, width: `${(c.total / byCat[0].total) * 100}%`, transition: "width 0.8s ease" }} />
-              </div>
-            </div>
-          ))}
-        </Card>
-      )}
     </div>
+  );
+}
+
+/* ── Chart components ── */
+
+function DonutChart({ slices, total }: { slices: { value: number; color: string; label: string }[]; total: number }) {
+  const R = 54; const r = 34; const cx = 70; const cy = 70;
+  let angle = -Math.PI / 2;
+  const active = slices.filter(s => s.value > 0);
+
+  const paths = active.map(s => {
+    const sweep = total > 0 ? (s.value / total) * 2 * Math.PI : 0;
+    const x1 = cx + R * Math.cos(angle);
+    const y1 = cy + R * Math.sin(angle);
+    angle += sweep;
+    const x2 = cx + R * Math.cos(angle);
+    const y2 = cy + R * Math.sin(angle);
+    const large = sweep > Math.PI ? 1 : 0;
+    return { path: `M${cx},${cy}L${x1.toFixed(1)},${y1.toFixed(1)}A${R},${R},0,${large},1,${x2.toFixed(1)},${y2.toFixed(1)}Z`, color: s.color };
+  });
+
+  return (
+    <svg viewBox="0 0 140 140" style={{ width: 130, height: 130, flexShrink: 0 }}>
+      {paths.length === 0
+        ? <circle cx={cx} cy={cy} r={R} fill="#f3f4f6" />
+        : paths.map((p, i) => <path key={i} d={p.path} fill={p.color} />)
+      }
+      <circle cx={cx} cy={cy} r={r} fill="#fff" />
+      <text x={cx} y={cy - 5} textAnchor="middle" fontSize="9" fill="#9ca3af">total</text>
+      <text x={cx} y={cy + 11} textAnchor="middle" fontSize="11" fontWeight="700" fill="#111">
+        {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(total)}
+      </text>
+    </svg>
+  );
+}
+
+function MonthlyBarsChart({ data }: { data: { label: string; picpay: number; bradesco: number; pix: number; other: number; income: number; total: number }[] }) {
+  const W = 300; const H = 160;
+  const PAD = { top: 16, right: 8, bottom: 28, left: 8 };
+  const chartW = W - PAD.left - PAD.right;
+  const chartH = H - PAD.top - PAD.bottom;
+  const maxVal = Math.max(...data.map(d => Math.max(d.total, d.income)), 1);
+  const n = data.length;
+  const slot = chartW / n;
+  const barW = slot * 0.55;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }}>
+      {/* Grid lines */}
+      {[0.25, 0.5, 0.75, 1].map(p => {
+        const y = PAD.top + chartH * (1 - p);
+        return <line key={p} x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke="#f3f4f6" strokeWidth="1" />;
+      })}
+
+      {data.map((d, i) => {
+        const cx = PAD.left + slot * i + slot / 2;
+        const x = cx - barW / 2;
+        const isLast = i === data.length - 1;
+
+        const segments = [
+          { v: d.picpay, c: "#059669" },
+          { v: d.bradesco, c: "#d97706" },
+          { v: d.pix, c: "#4f46e5" },
+          { v: d.other, c: "#9ca3af" },
+        ].filter(s => s.v > 0);
+
+        let curY = PAD.top + chartH;
+        const bars = segments.map(seg => {
+          const h = (seg.v / maxVal) * chartH;
+          curY -= h;
+          return <rect key={seg.c} x={x} y={curY} width={barW} height={h} fill={seg.c} rx={i === 0 ? 0 : 2} />;
+        });
+
+        // Income dot/line
+        const incY = PAD.top + chartH * (1 - d.income / maxVal);
+
+        return (
+          <g key={d.label}>
+            {bars}
+            {/* Bar rounded top */}
+            {d.total > 0 && <rect x={x} y={PAD.top + chartH - (d.total / maxVal) * chartH} width={barW} height={4} fill={segments[segments.length - 1]?.c || "#9ca3af"} rx="2" />}
+            {/* Income dot */}
+            {d.income > 0 && <circle cx={cx} cy={incY} r={3} fill="#10b981" />}
+            {/* Income line segment to next */}
+            {d.income > 0 && i < data.length - 1 && data[i + 1].income > 0 && (
+              <line
+                x1={cx} y1={incY}
+                x2={PAD.left + slot * (i + 1) + slot / 2}
+                y2={PAD.top + chartH * (1 - data[i + 1].income / maxVal)}
+                stroke="#10b981" strokeWidth="1.5" strokeDasharray="3,2"
+              />
+            )}
+            {/* Current month highlight */}
+            {isLast && <rect x={x - 2} y={PAD.top} width={barW + 4} height={chartH} fill="rgba(99,102,241,0.04)" rx="3" />}
+            {/* X label */}
+            <text x={cx} y={H - PAD.bottom + 14} textAnchor="middle" fontSize="9" fill={isLast ? "#6366f1" : "#9ca3af"} fontWeight={isLast ? "700" : "400"}>{d.label}</text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 
